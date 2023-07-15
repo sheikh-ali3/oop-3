@@ -272,7 +272,30 @@ using namespace std;
 //};
 
 /*task 04*/
-class 
+class FileFilter {
+public:
+	virtual char transform(char ch) = 0;
+
+	void doFilter(ifstream& in, ofstream& out) {
+		char ch;
+		while (in.get(ch)) {
+			char transformedCh = transform(ch);
+			out << transformedCh;
+		}
+	}
+};
+class UppercaseFilter : public FileFilter {
+public:
+	char transform(char ch) override {
+		return toupper(ch);
+	}
+};
+class CopyFilter : public FileFilter {
+public:
+	char transform(char ch) override {
+		return ch;
+	}
+};
 
 int main()
 {
@@ -326,6 +349,27 @@ int main()
 	Rectangle obj2(1,7);
 	cout << "area of rectangle = " << obj.getArea() << endl;*/
 
+	ifstream inputFile("input.txt");
+	ofstream uppercaseFile("uppercase.txt");
+	ofstream copyFile("copy.txt");
+
+	if (inputFile.is_open() && uppercaseFile.is_open() && copyFile.is_open()) {
+		UppercaseFilter uppercaseFilter;
+		CopyFilter copyFilter;
+
+		uppercaseFilter.doFilter(inputFile, uppercaseFile);
+		copyFilter.doFilter(inputFile, copyFile);
+
+		inputFile.close();
+		uppercaseFile.close();
+		copyFile.close();
+
+		cout << "Files filtered successfully!" << endl;
+	}
+	else {
+		cout << "Failed to open files." << endl;
+	}
+	
 	return 0;
 }
 
